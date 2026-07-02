@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #14192a;
+  --panel: #1e2740;
+  --panel-raised: #253052;
+  --parchment: #f2eee3;
+  --parchment-dim: #b9b4a4;
+  --brass: #c9a24b;
+  --brass-dim: #9c8047;
+  --rust: #a24b4b;
+  --rust-dim: #7a3838;
+  --rule: #38456b;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-panel: var(--panel);
+  --color-panel-raised: var(--panel-raised);
+  --color-parchment: var(--parchment);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-brass: var(--brass);
+  --color-brass-dim: var(--brass-dim);
+  --color-rust: var(--rust);
+  --color-rust-dim: var(--rust-dim);
+  --color-rule: var(--rule);
+  --font-display: var(--font-fraunces);
+  --font-serif: var(--font-newsreader);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+::selection {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+  }
+}
