@@ -27,15 +27,23 @@ SYSTEM_PROMPT = (
     "and the answer should state the data is not in the corpus. Do not guess."
 )
 
-# Numbers must match verbatim against source text: currency amounts,
-# percentages (incl. negative/parenthesized losses), basis points, and
-# multiples ("5.2x"), in that priority order (currency before bare percent
-# so "$4.2 million" isn't split into two partial matches).
+# Numbers must match verbatim against source text: currency amounts (either
+# symbol-prefixed like "₹1,600 crore"/"Rs.1,600 crore", or bare with a
+# trailing unit word like real transcripts often write -- "22,100 Crores"
+# with no symbol at all), percentages (incl. negative/parenthesized losses),
+# basis points, and multiples ("5.2x"). Case-insensitive since source PDFs
+# are inconsistent about "Crores" vs "crores". Bare numbers with no
+# currency/percent/bps/multiple signal are deliberately left unmatched --
+# without a unit, a plain integer isn't distinguishably a "financial figure"
+# and treating every one as a claim requiring citation would false-positive
+# on dates, counts, and other harmless numbers.
 NUMBER_PATTERN = re.compile(
-    r"[₹$]\(?-?[\d,]+(?:\.\d+)?\)?(?:\s?(?:crore|million|billion|bn|mn))?"
+    r"(?:[₹$]|rs\.?|inr)\s?\(?-?[\d,]+(?:\.\d+)?\)?(?:\s?(?:crores?|million|billion|lakhs?|bn|mn))?"
+    r"|\(?-?[\d,]+(?:\.\d+)?\)?\s?(?:crores?|million|billion|lakhs?)\b"
     r"|\d+(?:\.\d+)?\s?(?:basis points|bps)"
     r"|-?\(?\d[\d,]*(?:\.\d+)?\)?%"
-    r"|\d+(?:\.\d+)?x\b"
+    r"|\d+(?:\.\d+)?x\b",
+    re.IGNORECASE,
 )
 
 

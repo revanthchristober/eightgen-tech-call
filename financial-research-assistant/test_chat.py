@@ -48,6 +48,33 @@ def test_verify_numeric_fidelity_rejects_rounded_number():
     assert "25%" in unverified
 
 
+# Real chunk from Reliance's actual Q2 FY26 call transcript (page 3), which
+# states PAT as a bare number + unit word with no currency symbol at all --
+# "PAT basis at 22,100 Crores" -- unlike TCS's "₹65,799 crore" style.
+RIL_PAT_CHUNK = next(c for c in get_chunks() if c.chunk_id == "ril-transcript-q2fy26-p3")
+
+
+def test_verify_numeric_fidelity_accepts_bare_number_with_unit_word_no_symbol():
+    answer = "Reliance Industries' PAT in Q2 FY26 was 22,100 Crores, pre-minority."
+    assert verify_numeric_fidelity(answer, [RIL_PAT_CHUNK]) == []
+
+
+def test_verify_numeric_fidelity_rejects_fabricated_bare_number():
+    answer = "Reliance Industries' PAT in Q2 FY26 was 99,999 Crores, pre-minority."
+    unverified = verify_numeric_fidelity(answer, [RIL_PAT_CHUNK])
+    assert "99,999 Crores" in unverified
+
+
+# Real chunk from HDFC's transcript (page 3), which uses "Rs." instead of
+# the ₹ symbol -- "Rs.1,600 crores".
+HDFC_NPA_CHUNK = next(c for c in get_chunks() if c.chunk_id == "hdfcbank-transcript-q2fy26-p3")
+
+
+def test_verify_numeric_fidelity_accepts_rs_prefix_not_just_rupee_symbol():
+    answer = "HDFC Bank added contingent provisions of Rs.1,600 crores in Q2 FY26."
+    assert verify_numeric_fidelity(answer, [HDFC_NPA_CHUNK]) == []
+
+
 def test_extract_companies_matches_alias():
     assert extract_companies("How is TCS doing?") == ["TCS"]
 

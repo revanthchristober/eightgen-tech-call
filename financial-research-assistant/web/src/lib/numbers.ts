@@ -2,8 +2,11 @@ import { Citation } from "./types";
 
 // Mirrors chat.py's NUMBER_PATTERN so the client can highlight exactly the
 // figures the backend already verified verbatim against a source chunk.
+// Currency figures may be symbol-prefixed ("₹1,600 crore"/"Rs.1,600 crore")
+// or bare with a trailing unit word ("22,100 Crores", no symbol at all) --
+// real transcripts use both. Case-insensitive for "Crores" vs "crores".
 const NUMBER_PATTERN =
-  /[₹$]\(?-?[\d,]+(?:\.\d+)?\)?(?:\s?(?:crore|million|billion|bn|mn))?|\d+(?:\.\d+)?\s?(?:basis points|bps)|-?\(?\d[\d,]*(?:\.\d+)?\)?%|\d+(?:\.\d+)?x\b/g;
+  /(?:[₹$]|rs\.?|inr)\s?\(?-?[\d,]+(?:\.\d+)?\)?(?:\s?(?:crores?|million|billion|lakhs?|bn|mn))?|\(?-?[\d,]+(?:\.\d+)?\)?\s?(?:crores?|million|billion|lakhs?)\b|\d+(?:\.\d+)?\s?(?:basis points|bps)|-?\(?\d[\d,]*(?:\.\d+)?\)?%|\d+(?:\.\d+)?x\b/gi;
 
 export interface TextSegment {
   text: string;
